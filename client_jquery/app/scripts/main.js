@@ -5,7 +5,7 @@ $( document ).ready(function() {
 	var serviceRoot = 'http://localhost:9000/HirsiServer_JAX-RS/services/words/'
 	var alphapets = 'ABCDEFGHIJKLMNOPQRSTUVXYZÅÄÖ'.split('');
 
-	var maxErrors = 6;
+	var maxErrors = 9;
 	var errorCount = 0;
 	var wordLength = 0;
 	var wordId = 0;
@@ -157,6 +157,8 @@ $( document ).ready(function() {
 
 						if( $('.hiddenLetter[data-hidden=true]').length == 0 )
 						{
+							$("#statusImage").attr("src","images/image_vic.png");
+
 							gameFinished(true);
 						}
 					}
@@ -164,6 +166,8 @@ $( document ).ready(function() {
 					{
 						btn.css('color','red');
 						errorCount++;
+
+						$("#statusImage").attr("src","images/image" + errorCount + ".png");
 
 						if( errorCount > maxErrors )
 						{
