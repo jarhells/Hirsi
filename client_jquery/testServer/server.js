@@ -6,7 +6,17 @@ app.use(express.static('../app'));
 
 var theWord = 'SALASANA';
 
-var server = app.listen(9000);
+app.listen(9000, function () 
+{
+  console.log('Test server running in port 9000');
+});
+
+app.use(function(req, res, next) 
+{
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 
 app.get('/HirsiServer_JAX-RS/services/words/getWord', function (req, res)
 {

@@ -5,11 +5,12 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "dev": "node ./node_modules/concurrently/src/main.js --kill-others \"gulp build-client\" \"node server.js\""
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "concurrently": "^2.1.0",
     "gulp": "^3.9.1",
     "gulp-connect": "^4.0.0"
   },
