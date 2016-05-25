@@ -16,9 +16,10 @@ $(document).ready(function() {
     wordLength = data.length;
 
     for (var i = 0; i < wordLength; i++) {
-      var hiddenLetter = $('<b></b>',
-        {id: 'hiddenLetter' + i, class: 'hiddenLetter'}).text(' _ ');
+      var hiddenLetter = $('<button></button>',
+        {id: 'hiddenLetter' + i, class: 'hiddenLetter'}).text('*');
       hiddenLetter.attr('data-hidden', true);
+      hiddenLetter.attr('disabled', true);
 
       $('#hiddenLetters').append(hiddenLetter);
     }
@@ -33,6 +34,7 @@ $(document).ready(function() {
 
     button.attr('id', 'letter' + alphapets[i]);
     button.attr('class', 'letter');
+    button.attr('data-state', 'notClicked');
 
     button.click((function(btn, letter) {
       return function() {
@@ -96,6 +98,7 @@ $(document).ready(function() {
     $('.letter').attr('disabled', true);
 
     var newGameBtnText;
+    var effect;
 
     if (isVictory) {
       $('#gameFinished').append(
@@ -109,14 +112,18 @@ $(document).ready(function() {
       $('#gameFinished').append($('<br>'));
 
       newGameBtnText = 'Aloita uusi peli';
+      effect = 'bounce';
     } else {
       $('#gameFinished').append($('<b></b>').text('Aijai, hävisit pelin!'));
       $('#gameFinished').append($('<br>'));
+      $('#gameFinished').append($('<br>'));
 
       newGameBtnText = 'Yritä uudelleen';
+      effect = 'shake';
     }
 
     var newGamebutton = $('<button></button>').text(newGameBtnText);
+    newGamebutton.attr('class', 'gameButton');
 
     newGamebutton.click(function() {
       document.location.reload(true);
@@ -124,6 +131,7 @@ $(document).ready(function() {
 
     $('#gameFinished').append(newGamebutton);
     $('#gameFinished').show(1000);
+    $('#gameFinished').effect(effect);
   }
 
 /**
@@ -160,16 +168,23 @@ $(document).ready(function() {
     }).then(function(data) {
       var indexes = [];
 
+      btn.attr('disabled', true);
       $.each(data, function(key) {
         indexes.push(key);
       });
 
       if (indexes.length > 0) {
-        btn.css('color', 'green');
+        btn.attr('data-state', 'correct');
+
+        btn.animate({
+          color: 'green'
+        }, 400, 'easeOutElastic');
 
         for (var i = 0; i < indexes.length; i++) {
           $('#hiddenLetter' + indexes[i]).text(' ' + letter + ' ');
           $('#hiddenLetter' + indexes[i]).attr('data-hidden', false);
+
+          $('#hiddenLetter' + indexes[i]).effect('highlight');
         }
 
         if ($('.hiddenLetter[data-hidden=true]').length === 0) {
@@ -177,8 +192,12 @@ $(document).ready(function() {
           gameFinished(true);
         }
       } else {
-        btn.css('color', 'red');
+        btn.attr('data-state', 'incorrect');
         errorCount++;
+
+        btn.animate({
+          color: 'red'
+        }, 400, 'easeOutElastic');
 
         $('#statusImage').attr('src', 'images/image' + errorCount + '.png');
 
@@ -187,7 +206,5 @@ $(document).ready(function() {
         }
       }
     });
-
-    btn.attr('disabled', true);
   }
 });
