@@ -9,6 +9,10 @@ gulp.task('statics', function() {
     .pipe(gulp.dest('dist/'));
   gulp.src('./app/images/**/*')
     .pipe(gulp.dest('dist/images/'));
+  gulp.src('./app/styles/**/*')
+    .pipe(gulp.dest('dist/styles/'));
+  gulp.src('./node_modules/jquery-ui/themes/base/jquery-ui.css')
+    .pipe(gulp.dest('dist/styles/'));
 });
 
 gulp.task('lint', function() {
@@ -20,7 +24,6 @@ gulp.task('lint', function() {
         'linebreak-style': ["error", "windows"]
       },
       globals: {
-        "$": true,
         "document": true
       }
     }))
@@ -30,7 +33,7 @@ gulp.task('lint', function() {
 
 gulp.task('connect', function() {
   connect.server({
-    root: 'app',
+    root: 'dist',
     port: 4000
   });
 });
@@ -42,7 +45,6 @@ gulp.task('browserify', function() {
     .pipe(gulp.dest('./dist/scripts/'));
 });
 
-
 gulp.task('default', ['connect']);
-gulp.task('build', ['lint']);
-gulp.task('build', ['statics', 'browserify', 'connect']);
+gulp.task('build', ['lint', 'statics', 'browserify']);
+gulp.task('exec', ['build', 'connect']);

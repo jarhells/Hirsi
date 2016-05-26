@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "gulp lint",
-    "build": "gulp build"
+    "build": "gulp build",
+    "exec": "gulp exec"
   },
   "repository": {
     "type": "git",
@@ -24,5 +25,9 @@
     "gulp-connect": "^4.0.0",
     "gulp-eslint": "^2.0.0",
     "vinyl-source-stream": "^1.1.0"
+  },
+  "dependencies": {
+    "jquery": "^2.2.4",
+    "jquery-ui": "^1.10.5"
   }
 }

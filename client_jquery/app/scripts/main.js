@@ -1,5 +1,8 @@
 'use strict';
 
+var $ = require('jquery');
+require('jquery-ui');
+
 $(document).ready(function() {
   var serviceRoot = 'http://localhost:9000/HirsiServer_JAX-RS/services/words/';
   var alphapets = 'ABCDEFGHIJKLMNOPQRSTUVXYZÅÄÖ'.split('');
