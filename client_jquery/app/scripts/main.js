@@ -3,6 +3,8 @@
 var $ = require('jquery');
 require('jquery-ui');
 
+var kb = require('./keyboard')();
+
 $(document).ready(function() {
   var serviceRoot = 'http://localhost:9000/HirsiServer_JAX-RS/services/words/';
   var alphapets = 'ABCDEFGHIJKLMNOPQRSTUVXYZÅÄÖ'.split('');
@@ -11,6 +13,18 @@ $(document).ready(function() {
   var wordLength = 0;
   var wordId = 0;
   var startTime;
+  var hintCost = 3;
+
+  var hintButton = $('<button></button>').text('Vihje');
+  hintButton.attr('id', 'hintButton');
+  hintButton.attr('class', 'hintButton');
+  $('#hint').append(hintButton);
+
+  var hintText = $('<i></i>');
+  hintText.attr('id', 'hintText');
+  hintText.attr('class', 'hintText');
+  $('#hint').append(hintText);
+  $('#hintText').hide();
 
   gameStarted();
 
@@ -28,6 +42,15 @@ $(document).ready(function() {
     }
 
     $('#hiddenLetters').show();
+
+    hintButton.click(function() {
+      $('.hintButton').attr('disabled', true);
+      $.getJSON({url: serviceRoot + 'getHint/' + wordId}).then(function(data) {
+        $('#hintText').text(data[0]);
+        $('#hintText').show();
+        updateGameStatus(3);
+      });
+    });
 
     startTime = new Date().getTime() / 1000;
   });
@@ -48,39 +71,11 @@ $(document).ready(function() {
     $('#inputLetters').append(button);
   }
 
-  $('body').keydown(function(e) {
-    var letter = String.fromCharCode(e.keyCode);
-
-    if (isLetter(letter)) {
-      if (e.keyCode === 221) {
-        letter = 'Å';
-      }
-      if (e.keyCode === 222) {
-        letter = 'Ä';
-      }
-      if (e.keyCode === 192) {
-        letter = 'Ö';
-      }
-
-      var btn = $('#letter' + letter);
-
-      if (btn.prop('disabled')) {
-        return;
-      }
-
-      checkLetter(btn, letter);
-    }
+  $('body').keypress(function(e) {
+    var letter = String.fromCharCode(e.keyCode).toUpperCase();
+    var btn = $('#letter' + letter);
+    kb.handleKeyboard(letter, btn, checkLetter);
   });
-
-/**
- * Checks if the given character is a letter.
- *
- * @param {character} c Character.
- * @return {boolean} Is the given character a valid letter.
- */
-  function isLetter(c) {
-    return c.length === 1 && c.toLowerCase() !== c.toUpperCase();
-  }
 
 /**
  * Sets up the new game started state.
@@ -90,6 +85,8 @@ $(document).ready(function() {
     $('#gameFinished').hide();
     $('#hiddenLetters').hide();
     $('#hiddenLetters').removeClass('hiddenLetter');
+
+    $('.hintButton').attr('disabled', false);
   }
 
 /**
@@ -99,6 +96,7 @@ $(document).ready(function() {
  */
   function gameFinished(isVictory) {
     $('.letter').attr('disabled', true);
+    $('.hintButton').attr('disabled', true);
 
     var newGameBtnText;
     var effect;
@@ -159,6 +157,25 @@ $(document).ready(function() {
   }
 
 /**
+ * Updates the game status according to the given penalty amount.
+ *
+ * @param {number} penaltyAmount Number of steps taken closer to losing.
+ */
+  function updateGameStatus(penaltyAmount) {
+    errorCount = errorCount + penaltyAmount;
+
+    $('#statusImage').attr('src', 'images/image' + errorCount + '.png');
+
+    if (errorCount + hintCost > maxErrors) {
+      $('.hintButton').attr('disabled', true);
+    }
+
+    if (errorCount > maxErrors) {
+      gameFinished(false);
+    }
+  }
+
+/**
  * Checks if the given letter is found in the word to be discovered.
  *
  * @param {Button} btn Button that this query relates to.
@@ -196,17 +213,12 @@ $(document).ready(function() {
         }
       } else {
         btn.attr('data-state', 'incorrect');
-        errorCount++;
 
         btn.animate({
           color: 'red'
         }, 400, 'easeOutElastic');
 
-        $('#statusImage').attr('src', 'images/image' + errorCount + '.png');
-
-        if (errorCount > maxErrors) {
-          gameFinished(false);
-        }
+        updateGameStatus(1);
       }
     });
   }

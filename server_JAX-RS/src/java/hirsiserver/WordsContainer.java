@@ -53,6 +53,11 @@ public class WordsContainer {
                 words.put(new UID().hashCode(), "SINIVUOKKO");
                 words.put(new UID().hashCode(), "TALITIAINEN");
                 words.put(new UID().hashCode(), "MAKARONILAATIKKO");
+                words.put(new UID().hashCode(), "KENGURU");
+                words.put(new UID().hashCode(), "PINGVIINI");
+                words.put(new UID().hashCode(), "PAPPA");
+                words.put(new UID().hashCode(), "SATEENVARJO");
+                words.put(new UID().hashCode(), "KESÄLOMA");
 
                 rand = new Random(System.nanoTime());
                 

@@ -40,3 +40,14 @@ app.get('/HirsiServer_JAX-RS/services/words/letterInWord/:id', function (req, re
 
     res.json( jsonData );
 })
+
+app.get('/HirsiServer_JAX-RS/services/words/getHint/:id', function (req, res)
+{
+    var id = req.params.id;
+
+    var jsonData = {};
+
+    jsonData[0] = 'Sana jota ei kerrota kaikille.';
+
+    res.json( jsonData );
+})

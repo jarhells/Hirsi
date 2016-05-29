@@ -4,14 +4,15 @@
     -webkit-box-shadow: 0px 0px 4px 1px grey;
     box-shadow: 0px 0px 4px 1px  grey;
 }
-/*
-.letter[data-state=correct] {
-    color: green;
-}
-.letter[data-state=incorrect] {
-    color: red;
-}
-*/
+
 .hiddenLetter:disabled {
     color: black;
+}
+
+.hintButton {
+	display:inline-block;
+}
+
+.hintText {
+	margin-left: 10px;
 }
