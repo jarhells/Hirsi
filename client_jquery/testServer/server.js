@@ -4,7 +4,11 @@ var app = express();
 
 app.use(express.static('../app'));
 
-var theWord = 'SALASANA';
+var words = [];
+words[0] = ['SALASANA', 'Sana jota ei kerrota kaikille.'];
+words[1] = ['TALITIAINEN', 'Lentävänä eläin, jossa keltaista väritystä.'];
+words[2] = ['PERISKOOPPI', 'Laite jolla näet vaikka sinua ei nähdä.'];
+words[3] = ['KESÄLOMA', 'Vuoden paras aika.'];
 
 app.listen(9000, function () 
 {
@@ -20,7 +24,8 @@ app.use(function(req, res, next)
 
 app.get('/HirsiServer_JAX-RS/services/words/getWord', function (req, res)
 {
-    res.json( { id: '5', length: theWord.length } );
+    var id = Math.floor((Math.random() * words.length));
+    res.json( { id: id, length: words[id][0].length } );
 })
 
 app.get('/HirsiServer_JAX-RS/services/words/letterInWord/:id', function (req, res)
@@ -30,9 +35,9 @@ app.get('/HirsiServer_JAX-RS/services/words/letterInWord/:id', function (req, re
 
     var jsonData = {};
 
-    for( var i = 0; i < theWord.length; i++ )
+    for( var i = 0; i < words[id][0].length; i++ )
     {
-        if( theWord[i] == letter )
+        if( words[id][0][i] == letter )
         {
             jsonData[i] = letter;  
         }
@@ -46,8 +51,7 @@ app.get('/HirsiServer_JAX-RS/services/words/getHint/:id', function (req, res)
     var id = req.params.id;
 
     var jsonData = {};
-
-    jsonData[0] = 'Sana jota ei kerrota kaikille.';
+    jsonData[0] = words[id][1];
 
     res.json( jsonData );
 })
